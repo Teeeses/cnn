@@ -1,0 +1,5 @@
+сборка: mvn clean package
+запуск из папки target: java -jar cnn-1.0.jar
+
+тестовая страница: http://localhost:8080/regognition.html
+сервис для загрузки файла: http://localhost:8080/services/image/recognize
