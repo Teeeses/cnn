@@ -114,7 +114,7 @@ public class DLConfiguration {
             OutputLayer layer6) {
         return new NeuralNetConfiguration.Builder()
                 .seed(12345)
-                .iterations(2)
+                .iterations(50)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.001)
                 .regularization(true)
@@ -145,13 +145,15 @@ public class DLConfiguration {
                                                CifarDataSetIterator dataSetIterator) throws IOException {
         MultiLayerNetwork network;
         if(Files.exists(Paths.get(networkBackup))){
-            network = ModelSerializer.restoreMultiLayerNetwork(new File(networkBackup));
+            File locationToSave = new File(networkBackup);
+            network = ModelSerializer.restoreMultiLayerNetwork(locationToSave);
         }else{
             network = new MultiLayerNetwork(multiLayerConfiguration);
             network.init();
             network.fit(dataSetIterator);
             try {
-                ModelSerializer.writeModel(network, networkBackup, true);
+                File locationToSave = new File(networkBackup);
+                ModelSerializer.writeModel(network, locationToSave, true);
             } catch (IOException e) {
                 System.out.println(e);
             }

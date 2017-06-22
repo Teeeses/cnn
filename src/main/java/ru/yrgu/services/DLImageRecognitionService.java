@@ -2,12 +2,14 @@ package ru.yrgu.services;
 
 import org.datavec.api.io.labels.ParentPathLabelGenerator;
 import org.datavec.api.split.FileSplit;
+import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.recordreader.ImageRecordReader;
 import org.deeplearning4j.datasets.datavec.RecordReaderDataSetIterator;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.dataset.api.iterator.DataSetIterator;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +28,7 @@ public class DLImageRecognitionService implements ImageRecognitionService {
     private MultiLayerNetwork multiLayerNetwork;
 
     @Override
-    public ArrayList<Float> recognize(InputStream inputStream) throws IOException {
+    public ArrayList<Float> recognizeInputStream(InputStream inputStream) throws IOException {
 
         Path tempFile = Files.createTempFile(null, ".png");
         try {
@@ -52,4 +54,21 @@ public class DLImageRecognitionService implements ImageRecognitionService {
             Files.deleteIfExists(tempFile);
         }
     }
+
+    @Override
+    public ArrayList<Float> recognizeFile(File file) throws IOException {
+        NativeImageLoader loader = new NativeImageLoader(32, 32, 3);
+        INDArray image = loader.asMatrix(file);
+
+        INDArray array = multiLayerNetwork.output(image);
+
+        ArrayList<Float> result = new ArrayList<>();
+        for(int i=0; i<array.data().length(); i++){
+            result.add(array.data().getFloat(i));
+        }
+
+        return result;
+    }
+
+
 }

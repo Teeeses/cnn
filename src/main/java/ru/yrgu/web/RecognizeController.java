@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/services/image/recognize")
+@RequestMapping("/services/image/recognizeInputStream")
 public class RecognizeController {
 
     @Autowired
@@ -24,7 +24,7 @@ public class RecognizeController {
 
     @PostMapping
     public List<ProbabilityDTO> recognize(MultipartFile file) throws IOException {
-        ArrayList<Float> result = imageRecognitionService.recognize(file.getInputStream());
+        ArrayList<Float> result = imageRecognitionService.recognizeInputStream(file.getInputStream());
         List<String> labels = dataSetIterator.getLabels();
         return result.stream().map(value -> new ProbabilityDTO(labels.get(result.indexOf(value)), value)).collect(Collectors.toList());
     }
