@@ -62,9 +62,9 @@ public class DLImageRecognitionServiceTest {
 
     @Test
     public void train() throws Exception {
-        List<String> LABELS = Arrays.asList("airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck");
-        int splitTrainNum = (int) (100 * 0.8);
-        int listenerFreq = 100 / 5;
+        /*List<String> LABELS = Arrays.asList("airplane", "automobile", "bird", "cat", "deer", "dog", "frog", "horse", "ship", "truck");
+        int splitTrainNum = (int) (50 * 0.8);
+        int listenerFreq = 50 / 5;
         List<INDArray> testInput = new ArrayList<>();
         List<INDArray> testLabels = new ArrayList<>();
 
@@ -72,7 +72,7 @@ public class DLImageRecognitionServiceTest {
         while (dataSetIterator.hasNext()) {
             multiLayerNetwork.setListeners(Arrays.asList((IterationListener) new ScoreIterationListener(listenerFreq)));
             DataSet cifarDataSet = dataSetIterator.next();
-            SplitTestAndTrain trainAndTest = cifarDataSet.splitTestAndTrain(splitTrainNum, new Random(123));
+            SplitTestAndTrain trainAndTest = cifarDataSet.splitTestAndTrain(splitTrainNum, new Random(12345));
             DataSet trainInput = trainAndTest.getTrain();
             testInput.add(trainAndTest.getTest().getFeatureMatrix());
             testLabels.add(trainAndTest.getTest().getLabels());
@@ -84,6 +84,21 @@ public class DLImageRecognitionServiceTest {
         for (int i = 0; i < testInput.size(); i++) {
             INDArray output = multiLayerNetwork.output(testInput.get(i));
             eval.eval(testLabels.get(i), output);
+        }
+
+        System.out.println(eval.stats());*/
+
+        while(dataSetIterator.hasNext()){
+            DataSet next = dataSetIterator.next();
+            multiLayerNetwork.fit(next);
+        }
+
+        dataSetIterator.reset();
+        Evaluation eval = new Evaluation();
+        while(dataSetIterator.hasNext()){
+            DataSet next = dataSetIterator.next();
+            INDArray predict2 = multiLayerNetwork.output(next.getFeatureMatrix());
+            eval.eval(next.getLabels(), predict2);
         }
 
         System.out.println(eval.stats());

@@ -113,8 +113,8 @@ public class DLConfiguration {
             SubsamplingLayer layer5,
             OutputLayer layer6) {
         return new NeuralNetConfiguration.Builder()
-                .seed(123)
-                .iterations(1)
+                .seed(12345)
+                .iterations(25)
                 .optimizationAlgo(OptimizationAlgorithm.STOCHASTIC_GRADIENT_DESCENT)
                 .learningRate(0.001)
                 .regularization(true)
@@ -137,7 +137,7 @@ public class DLConfiguration {
 
     @Bean
     public CifarDataSetIterator dataSetIterator() {
-        return new CifarDataSetIterator(100, 1024, true);
+        return new CifarDataSetIterator(50, 50000, true);
     }
 
     @Bean
